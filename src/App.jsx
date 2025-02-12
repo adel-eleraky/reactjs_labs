@@ -14,6 +14,10 @@ import Register from './pages/Register'
 import ProtectRoute from './components/ProtectRoute'
 import UnAuthRoute from './components/UnAuthRoute'
 import Account from './pages/Account'
+import ProductDetails from './pages/ProductDetails'
+import Cart from './pages/Cart'
+import UserProvider from './context/UserContext'
+import CartProvider from './context/CartContext'
 
 
 function App() {
@@ -22,19 +26,25 @@ function App() {
   return (
     <>
       <BrowserRouter>
-        <Routes>
-          <Route path='/' element={<Layout />}>
-            <Route index element={<Home />} />
-            <Route path="categories" element={<Categories />} />
-            <Route element={<UnAuthRoute />}>
-              <Route path="login" element={<Login />} />
-              <Route path="register" element={<Register />} />
-            </Route>
-            <Route element={<ProtectRoute />}>
-              <Route path='account' element={<Account />}/>
-            </Route>
-          </Route>
-        </Routes>
+        <UserProvider>
+          <CartProvider >
+            <Routes>
+              <Route path='/' element={<Layout />}>
+                <Route index element={<Home />} />
+                <Route path="/product/:productId" element={<ProductDetails />} />
+                <Route path="categories" element={<Categories />} />
+                <Route element={<UnAuthRoute />}>
+                  <Route path="login" element={<Login />} />
+                  <Route path="register" element={<Register />} />
+                </Route>
+                <Route element={<ProtectRoute />}>
+                  <Route path='account' element={<Account />} />
+                  <Route path='cart' element={<Cart />} />
+                </Route>
+              </Route>
+            </Routes>
+          </CartProvider>
+        </UserProvider>
       </BrowserRouter>
     </>
   )
