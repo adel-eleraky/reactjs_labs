@@ -1,10 +1,13 @@
 import axios from "axios";
 import { ErrorMessage, Field, Form, Formik, replace } from "formik";
-import react from "react"
+import react, { useContext } from "react"
 import { useNavigate } from "react-router";
 import * as yup from "yup"
+import { UserContext } from "../context/UserContext";
 
 function Login() {
+
+  let {setUser} = useContext(UserContext)
 
   let navigate = useNavigate()
   const initialValues = {
@@ -30,6 +33,7 @@ function Login() {
 
     login(values).then(data => {
       localStorage.setItem("user" , JSON.stringify({data: data.data, token: data.token}))
+      setUser(data)
       navigate("/" , {replace: true})
     })
 
