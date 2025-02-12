@@ -3,13 +3,14 @@ import ProductCard from '../components/ProductCard'
 import { HashLoader } from 'react-spinners'
 import axios from 'axios'
 import { renderProducts } from '../utils/Products'
+import Pagination from '@mui/material/Pagination';
 
 function Home() {
 
     const [products, setProducts] = useState([])
     const [loading, setLoading] = useState(true)
+    const [page , setPage] = useState(1)
 
-    console.log(products)
     async function fetchProducts() {
         try {
             let res = await axios.get('https://fakestoreapi.com/products')
@@ -19,6 +20,10 @@ function Home() {
         } catch (err) {
             console.log(err.message)
         }
+    }
+
+    function handleChange(e, selectedPage ) {
+        setPage(selectedPage)
     }
 
     useEffect(() => {
@@ -49,8 +54,11 @@ function Home() {
                 <div className='home-page py-4'>
                     <div className="container">
                         <div className="row">
-                            {productsElements}
+                            {productsElements.slice((page - 1) * 5 , (5 * page))}
                         </div>
+                    </div>
+                    <div className="row">
+                        <Pagination page={page} onChange={handleChange}  count={products.length / 5 } color="secondary" className='m-auto mt-3' style={{ width: "fit-content"}} />
                     </div>
                 </div>}
         </>
