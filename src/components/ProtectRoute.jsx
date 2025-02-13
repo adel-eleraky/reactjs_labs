@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Navigate, Outlet } from 'react-router'
+import { UserContext } from '../context/UserContext'
 
 function ProtectRoute() {
 
-    let user = localStorage.getItem("user") || null
+    let {user} = useContext(UserContext)
 
     if(!user) return <Navigate to="/login" replace="true" />
 
