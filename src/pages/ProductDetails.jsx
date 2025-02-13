@@ -12,7 +12,7 @@ function ProductDetails() {
     const [product, setProduct] = useState()
     const [loading, setLoading] = useState(true)
     const { user } = useContext(UserContext)
-    const {cart , setCart } = useContext(CartContext)
+    const { cart, setCart } = useContext(CartContext)
     const navigate = useNavigate()
     const [quantity, setQuantity] = useState(1)
 
@@ -29,8 +29,14 @@ function ProductDetails() {
     function handleCart(product) {
         if (!user) return navigate("/login")
         addToCart(product, user.data._id).then(data => {
-            localStorage.setItem("cart" , JSON.stringify(data.products))
-            setCart(data.products)
+            let newCart
+            if (cart.length != 0) {
+                newCart = [...cart, data.products[0]]
+            } else {
+                newCart = data.products
+            }
+            localStorage.setItem("cart", JSON.stringify(newCart))
+            setCart(newCart)
         })
     }
 

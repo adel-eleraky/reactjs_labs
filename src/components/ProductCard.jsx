@@ -7,8 +7,8 @@ import { CartContext } from '../context/CartContext';
 
 function ProductCard({ product }) {
 
-    const {user} = useContext(UserContext)
-    const {cart ,setCart } = useContext(CartContext)
+    const { user } = useContext(UserContext)
+    const { cart, setCart } = useContext(CartContext)
     let navigate = useNavigate()
     let { id, title, price, rating, image, description } = product
 
@@ -16,8 +16,14 @@ function ProductCard({ product }) {
     function handleCart(product) {
         if (!user) return navigate("/login")
         addToCart(product, user.data._id).then(data => {
-            localStorage.setItem("cart" , JSON.stringify(data.products))
-            setCart(data.products)
+            let newCart
+            if (cart.length != 0) {
+                newCart = [...cart , data.products[0]]
+            } else {
+                newCart = data.products
+            }
+            localStorage.setItem("cart", JSON.stringify(newCart))
+            setCart(newCart)
         })
     }
 
