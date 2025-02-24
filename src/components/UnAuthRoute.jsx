@@ -1,10 +1,12 @@
 import React, { useContext } from 'react'
 import { Navigate, Outlet } from 'react-router'
-import { UserContext } from '../context/UserContext'
+// import { UserContext } from '../context/UserContext'
+import { useSelector } from 'react-redux'
 
 function UnAuthRoute() {
-    let {user} = useContext(UserContext)
+    let {user} = useSelector(state => state.auth)
 
+    console.log(user)
     if (user) return <Navigate to="/account" replace="true" />
 
     return (
