@@ -1,17 +1,19 @@
 import React, { useContext } from 'react'
 import { Link } from 'react-router'
-import { UserContext } from '../context/UserContext'
-import { CartContext } from '../context/CartContext'
+// import { UserContext } from '../context/UserContext'
+// import { CartContext } from '../context/CartContext'
+import { useDispatch, useSelector } from 'react-redux'
+import { logoutUser } from '../rtk/features/AuthSlice'
 
 function NavBar() {
 
-    let { user, setUser } = useContext(UserContext)
-    let { cart, setCart } = useContext(CartContext)
+    let { user } = useSelector(state => state.auth)
+    let cart = useSelector(state => state.cart)
+    const dispatch = useDispatch()
 
-    console.log(cart)
-    async function logout() {
-        localStorage.clear("user")
-        setUser(null)
+    console.log(user)
+    function handleLogout() {
+        dispatch(logoutUser())
     }
 
     return (
@@ -29,7 +31,7 @@ function NavBar() {
                         {user ?
                             <>
                                 <li className="nav-item">
-                                    <Link className="nav-link text-white" to="account">{user?.data?.name}</Link>
+                                    <Link className="nav-link text-white" to="account">{user?.name}</Link>
                                 </li>
                                 <li className="nav-item position-relative">
                                     <Link className="nav-link text-white" to="cart">
@@ -38,7 +40,7 @@ function NavBar() {
                                     </Link>
                                 </li>
                                 <li className="nav-item">
-                                    <a className="nav-link text-white" onClick={logout}>Logout</a>
+                                    <a className="nav-link text-white" onClick={handleLogout}>Logout</a>
                                 </li>
                             </>
                             :
