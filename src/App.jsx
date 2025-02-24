@@ -18,33 +18,32 @@ import ProductDetails from './pages/ProductDetails'
 import Cart from './pages/Cart'
 import UserProvider from './context/UserContext'
 import CartProvider from './context/CartContext'
+import { Provider } from 'react-redux'
+import store from './rtk/Store'
 
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <>
       <BrowserRouter>
-        <UserProvider>
-          <CartProvider >
-            <Routes>
-              <Route path='/' element={<Layout />}>
-                <Route index element={<Home />} />
-                <Route path="/product/:productId" element={<ProductDetails />} />
-                <Route path="categories" element={<Categories />} />
-                <Route element={<UnAuthRoute />}>
-                  <Route path="login" element={<Login />} />
-                  <Route path="register" element={<Register />} />
-                </Route>
-                <Route element={<ProtectRoute />}>
-                  <Route path='account' element={<Account />} />
-                  <Route path='cart' element={<Cart />} />
-                </Route>
+        <Provider store={store}>
+          <Routes>
+            <Route path='/' element={<Layout />}>
+              <Route index element={<Home />} />
+              <Route path="/product/:productId" element={<ProductDetails />} />
+              <Route path="categories" element={<Categories />} />
+              <Route element={<UnAuthRoute />}>
+                <Route path="login" element={<Login />} />
+                <Route path="register" element={<Register />} />
               </Route>
-            </Routes>
-          </CartProvider>
-        </UserProvider>
+              <Route element={<ProtectRoute />}>
+                <Route path='account' element={<Account />} />
+                <Route path='cart' element={<Cart />} />
+              </Route>
+            </Route>
+          </Routes>
+        </Provider>
       </BrowserRouter>
     </>
   )
