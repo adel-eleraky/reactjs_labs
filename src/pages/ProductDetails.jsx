@@ -3,18 +3,22 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Navigate, useNavigate, useParams } from 'react-router'
 import { HashLoader } from 'react-spinners'
 import ReactStars from "react-rating-stars-component";
-import { UserContext } from '../context/UserContext';
-import { CartContext } from '../context/CartContext';
+// import { UserContext } from '../context/UserContext';
+// import { CartContext } from '../context/CartContext';
+import { useDispatch, useSelector } from 'react-redux';
+import { addToCart } from '../rtk/features/CartSlice';
+import { toast } from 'react-toastify';
 
 function ProductDetails() {
 
     const { productId } = useParams()
     const [product, setProduct] = useState()
     const [loading, setLoading] = useState(true)
-    const { user } = useContext(UserContext)
-    const { cart, setCart } = useContext(CartContext)
+    const { user } = useSelector(state => state.auth)
+    // const { cart, setCart } = useContext(CartContext)
     const navigate = useNavigate()
     const [quantity, setQuantity] = useState(1)
+    let dispatch = useDispatch()
 
     async function fetchProduct(id) {
         try {
@@ -26,31 +30,54 @@ function ProductDetails() {
 
     }
 
-    function handleCart(product) {
+    // function handleCart(product) {
+    //     if (!user) return navigate("/login")
+    //     addToCart(product, user.data._id).then(data => {
+    //         let newCart
+    //         if (cart.length != 0) {
+    //             newCart = [...cart, data.products[0]]
+    //         } else {
+    //             newCart = data.products
+    //         }
+    //         localStorage.setItem("cart", JSON.stringify(newCart))
+    //         setCart(newCart)
+    //     })
+    // }
+
+    // async function addToCart(product, userId) {
+    //     try {
+    //         let res = await axios.post("https://fakestoreapi.com/carts", {
+    //             userId,
+    //             products: [{ productId: product.id, quantity }]
+    //         })
+    //         return res.data
+    //     } catch (err) {
+    //         console.log(err)
+    //     }
+    // }
+
+
+    const addToCartHandler = (product, quantity = 1) => {
         if (!user) return navigate("/login")
-        addToCart(product, user.data._id).then(data => {
-            let newCart
-            if (cart.length != 0) {
-                newCart = [...cart, data.products[0]]
-            } else {
-                newCart = data.products
-            }
-            localStorage.setItem("cart", JSON.stringify(newCart))
-            setCart(newCart)
-        })
+        dispatch(addToCart({ ...product, quantity }))
+        notifyAddToCart()
     }
 
-    async function addToCart(product, userId) {
-        try {
-            let res = await axios.post("https://fakestoreapi.com/carts", {
-                userId,
-                products: [{ productId: product.id, quantity }]
-            })
-            return res.data
-        } catch (err) {
-            console.log(err)
-        }
+
+    const notifyAddToCart = () => {
+        toast.success('Product Added To Cart', {
+            position: "top-center",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+
+        });
     }
+
 
     useEffect(() => {
         fetchProduct(productId).then(data => {
@@ -103,7 +130,7 @@ function ProductDetails() {
                                         {/* <h4 className='availability'>Availability: <span className='fw-light'>{stock} In-Stock</span></h4> */}
                                         <h4 className='quantity'>Order Quantity: <input className='form-control w-25 mt-2' type="number" name="quantity" value={quantity} onChange={(e) => setQuantity(e.target.value)} /></h4>
                                     </div>
-                                    <button onClick={() => handleCart(product)} className="btn add-to-cart text-dark fw-bold me-3" style={{ backgroundColor: "rgb(5 72 25 / 52%)" }} ><i className="fa-solid fa-cart-plus me-2"></i>Add to Cart</button>
+                                    <button onClick={() => addToCartHandler(product, quantity)} className="btn add-to-cart text-dark fw-bold me-3" style={{ backgroundColor: "rgb(5 72 25 / 52%)" }} ><i className="fa-solid fa-cart-plus me-2"></i>Add to Cart</button>
                                     {/* <button className="btn add-to-wishlist text-dark fw-bold" onClick={WishlistHandler}>
                                         {wish ? <><i className="fa-solid fa-heart-crack me-2"></i> Remove from wishlist</> : <><i className="fa-solid fa-heart me-2"></i> Add to wishlist</>}
                                     </button> */}

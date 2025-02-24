@@ -3,10 +3,13 @@ import { ErrorMessage, Field, Form, Formik } from "formik";
 import react from "react"
 import { useNavigate } from "react-router";
 import * as yup from "yup"
+import { registerUser } from "../rtk/features/AuthSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 function Register() {
 
     let navigate = useNavigate()
+    let dispatch = useDispatch()
 
     const initialValues = {
         name: "",
@@ -17,7 +20,7 @@ function Register() {
     };
 
     const validationSchema = yup.object().shape({
-        name: yup.string().min(2 , "Min length is 2 char").max(16 , "Max length is 16 char").required("Name is required"),
+        name: yup.string().min(2, "Min length is 2 char").max(16, "Max length is 16 char").required("Name is required"),
         email: yup
             .string()
             .required("Email is required")
@@ -31,17 +34,15 @@ function Register() {
             .required("Password is required"),
         confirmPass: yup.string().oneOf([yup.ref("password")], "Confirm pass must match password").required("Confirm password is required"),
         phone: yup.string().matches(/^(010|011|012|015)[0-9]{8}/, "Invalid phone").required("Phone is required")
-        
+
     });
 
     const submitHandler = (values) => {
 
         console.log(values)
-        register(values).then(data => {
-            console.log(data)
-            localStorage.setItem("user" , JSON.stringify({data: data.data, token: data.token}))
-            navigate("/" , {replace: true})
-        })
+        dispatch(registerUser(values))
+        // register(values).then(data => {
+        // })
     };
 
     async function register(data) {
@@ -63,7 +64,6 @@ function Register() {
                     onSubmit={submitHandler}
                 >
                     {({ values, errors, touched }) => {
-                        console.log(values)
                         return (
                             <Form method="post" className="needs-validation w-50 m-auto p-5 rounded shadow mt-5" noValidate >
                                 <label htmlFor="email" className="form-label">

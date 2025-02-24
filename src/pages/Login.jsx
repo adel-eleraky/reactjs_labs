@@ -3,13 +3,16 @@ import { ErrorMessage, Field, Form, Formik, replace } from "formik";
 import react, { useContext } from "react"
 import { useNavigate } from "react-router";
 import * as yup from "yup"
-import { UserContext } from "../context/UserContext";
+import { loginUser } from "../rtk/features/AuthSlice";
+import { useDispatch } from "react-redux";
+// import { UserContext } from "../context/UserContext";
 
 function Login() {
 
-  let {setUser} = useContext(UserContext)
-
+  // let {setUser} = useContext(UserContext)
+  let dispatch = useDispatch()
   let navigate = useNavigate()
+  
   const initialValues = {
     email: "",
     password: "",
@@ -30,25 +33,19 @@ function Login() {
   });
 
   const submitHandler = (values) => {
-
-    login(values).then(data => {
-      localStorage.setItem("user" , JSON.stringify({data: data.data, token: data.token}))
-      setUser(data)
-      navigate("/" , {replace: true})
-    })
-
+    dispatch(loginUser(values))
   };
 
 
-  async function login(data) {
-    try {
-      let res = await axios.post("http://localhost:3000/api/v1/users/login", data)
+  // async function login(data) {
+  //   try {
+  //     let res = await axios.post("http://localhost:3000/api/v1/users/login", data)
 
-      return res.data
-    }catch(err) {
-      console.log(err)
-    }
-  }
+  //     return res.data
+  //   } catch (err) {
+  //     console.log(err)
+  //   }
+  // }
   return (
 
     <div className="login-page">
@@ -114,7 +111,7 @@ function Login() {
                 <button
                   className="text-white submit-btn btn d-block w-50 py-2 mb-4 mx-auto fs-4"
                   type="submit"
-                  style={{ backgroundColor: "rgb(5 72 25 / 52%)"}}
+                  style={{ backgroundColor: "rgb(5 72 25 / 52%)" }}
                 >
                   Login
                 </button>
