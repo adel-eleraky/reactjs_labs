@@ -25,7 +25,7 @@ export const loginUser = createAsyncThunk(
 //Async thunk to register user
 export const registerUser = createAsyncThunk("auth/register", async (credentials, { rejectWithValue }) => {
     try {
-        const response = await axios.post(`${API_URL}/users/signup`, credentials);
+        const response = await axios.post(`${API_URL}/users/signup`, credentials, { withCredentials: true});
         return response.data;
     } catch (err) {
 
@@ -33,6 +33,15 @@ export const registerUser = createAsyncThunk("auth/register", async (credentials
     }
 })
 
+export const verifyUser = createAsyncThunk("auth/verify", async (credentials, { rejectWithValue }) => {
+    try {
+        const response = await axios.put(`${API_URL}/users/verify`, credentials, { withCredentials: true});
+        return response.data;
+    } catch (err) {
+
+        return rejectWithValue(err.response?.data);
+    }
+})
 
 //Async thunk to get logged-in user
 export const getLoggedInUser = createAsyncThunk("auth/loggedInUser", async (_, { rejectWithValue }) => {
@@ -131,6 +140,22 @@ const authSlice = createSlice({
                 state.message = action.payload.message
             })
             .addCase(logoutUser.rejected, (state, action) => {
+                state.loading = false
+                state.status = action.payload.status
+                state.errors = action.payload.errors
+                state.message = action.payload.message
+            })
+            .addCase(verifyUser.pending, (state, action) => {
+                state.loading = true
+                state.errors = null
+            })
+            .addCase(verifyUser.fulfilled, (state, action) => {
+                state.loading = false
+                state.status = action.payload.status
+                state.user = action.payload.data
+                state.message = action.payload.message
+            })
+            .addCase(verifyUser.rejected, (state, action) => {
                 state.loading = false
                 state.status = action.payload.status
                 state.errors = action.payload.errors

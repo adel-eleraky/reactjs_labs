@@ -7,7 +7,7 @@ function UnAuthRoute() {
     let {user} = useSelector(state => state.auth)
 
     console.log(user)
-    if (user) return <Navigate to="/account" replace="true" />
+    if (user && user.emailVerified ) return <Navigate to="/account" replace="true" />
 
     return (
         <Outlet />
