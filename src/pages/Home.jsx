@@ -4,13 +4,16 @@ import { HashLoader } from 'react-spinners'
 import axios from 'axios'
 import { renderProducts } from '../utils/Products'
 import Pagination from '@mui/material/Pagination';
+import useWindowSize from '../hooks/WindowSize'
 
 function Home() {
 
     const [products, setProducts] = useState([])
     const [loading, setLoading] = useState(true)
     const [page , setPage] = useState(1)
+    const windowSize =  useWindowSize()
 
+    console.log(windowSize)
     async function fetchProducts() {
         try {
             let res = await axios.get('https://fakestoreapi.com/products')
