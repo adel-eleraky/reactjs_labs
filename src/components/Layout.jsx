@@ -8,23 +8,10 @@ import { useDispatch } from 'react-redux';
 function Layout() {
 
     const dispatch = useDispatch()
-    let [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        // dispatch(f())
-        dispatch(getLoggedInUser()).then(() => {
-            setLoading(false)
-        })
+        dispatch(getLoggedInUser())
     }, [])
-
-    if (loading) {
-        return (
-            // <div className='vh-100 d-flex justify-content-center align-items-center'>
-            //     <RotateSpinner size={100} color="#55c57a" loading={loading} />
-            // </div>
-            <div>loading</div>
-        )
-    }
 
     return (
         <>
