@@ -15,7 +15,10 @@ import UserProvider from './context/UserContext'
 import CartProvider from './context/CartContext'
 import { Provider } from 'react-redux'
 import store from './rtk/Store'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
+
+const queryClient = new QueryClient()
 
 function App() {
 
@@ -29,23 +32,25 @@ function App() {
   return (
     <>
       <BrowserRouter>
-        <Provider store={store}>
-          <Routes>
-            <Route path='/' element={<Layout />}>
-              <Route index element={<Suspense>  <Home /> </Suspense>} />
-              <Route path="/product/:productId" element={ <Suspense> <ProductDetails /> </Suspense>} />
-              <Route path="categories" element={ <Suspense> <Categories /> </Suspense>} />
-              <Route element={<UnAuthRoute />}>
-                <Route path="login" element={<Suspense> <Login /> </Suspense>} />
-                <Route path="register" element={<Suspense> <Register /> </Suspense>} />
+        <QueryClientProvider client={queryClient}>
+          <Provider store={store}>
+            <Routes>
+              <Route path='/' element={<Layout />}>
+                <Route index element={<Suspense>  <Home /> </Suspense>} />
+                <Route path="/product/:productId" element={<Suspense> <ProductDetails /> </Suspense>} />
+                <Route path="categories" element={<Suspense> <Categories /> </Suspense>} />
+                <Route element={<UnAuthRoute />}>
+                  <Route path="login" element={<Suspense> <Login /> </Suspense>} />
+                  <Route path="register" element={<Suspense> <Register /> </Suspense>} />
+                </Route>
+                <Route element={<ProtectRoute />}>
+                  <Route path='account' element={<Account />} />
+                  <Route path='cart' element={<Cart />} />
+                </Route>
               </Route>
-              <Route element={<ProtectRoute />}>
-                <Route path='account' element={<Account />} />
-                <Route path='cart' element={<Cart />} />
-              </Route>
-            </Route>
-          </Routes>
-        </Provider>
+            </Routes>
+          </Provider>
+        </QueryClientProvider>
       </BrowserRouter>
     </>
   )
